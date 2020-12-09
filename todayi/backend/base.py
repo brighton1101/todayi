@@ -8,7 +8,6 @@ from todayi.model.tag import Tag
 
 
 class Backend(ABC):
-
     @abstractmethod
     def reconcile_tags(tags: List[Tag]) -> List[Tag]:
         """

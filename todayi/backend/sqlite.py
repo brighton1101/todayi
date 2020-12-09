@@ -1,7 +1,15 @@
 from datetime import datetime, timedelta
-from typing import List, Optional
+from typing import List
 
-from sqlalchemy import create_engine, Table, Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import (
+    create_engine,
+    Table,
+    Column,
+    Integer,
+    String,
+    DateTime,
+    ForeignKey,
+)
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -69,10 +77,7 @@ class SqliteBackend(Backend):
         :return: List[Tag] reconciled with backend
         """
         reconciled_db_tags = self._reconcile_tags(tags)
-        return [
-            Tag(name=t.name, uuid=t.uuid)
-            for t in reconciled_db_tags
-        ]
+        return [Tag(name=t.name, uuid=t.uuid) for t in reconciled_db_tags]
 
     def write_entry(self, entry: Entry):
         """
@@ -81,9 +86,7 @@ class SqliteBackend(Backend):
         tags = entry.tags
         reconciled_db_tags = self._reconcile_tags(tags)
         dbentry = SqliteEntry(
-            content = entry.content,
-            uuid = entry.uuid,
-            tags = reconciled_db_tags
+            content=entry.content, uuid=entry.uuid, tags=reconciled_db_tags
         )
         self._session.add(dbentry)
         self._session.commit()
@@ -151,15 +154,20 @@ class SqliteBackend(Backend):
         # Content filtering
         if entry_filter.content_contains is not None:
             query = query.filter(
-                SqliteEntry.content.like('%{}%'.format(
-                    entry_filter.content_contains)))
+                SqliteEntry.content.like("%{}%".format(entry_filter.content_contains))
+            )
         if entry_filter.content_equals is not None:
-            query = query.filter_by(content = entry_filter.content_equals)
+            query = query.filter_by(content=entry_filter.content_equals)
         if entry_filter.content_not_contains:
-            query = query.filter(SqliteEntry.content.notlike('%{}%'.format(
-                entry_filter.content_not_contains)))
+            query = query.filter(
+                SqliteEntry.content.notlike(
+                    "%{}%".format(entry_filter.content_not_contains)
+                )
+            )
         if entry_filter.content_not_equals is not None:
-            query = query.filter(SqliteEntry.content.isnot(entry_filter.content_not_equals))
+            query = query.filter(
+                SqliteEntry.content.isnot(entry_filter.content_not_equals)
+            )
 
         # Date filtering
         if entry_filter.after is not None:
