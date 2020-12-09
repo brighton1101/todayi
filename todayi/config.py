@@ -12,14 +12,14 @@ from typing import Any
 from todayi.util.fs import path, file_text, write_file
 
 
-CONFIG_PATH = '~/todayi.config'
+CONFIG_PATH = "~/todayi.config"
 
 
 DEFAULT_CONFIG = {
-    'backend': 'sqlite',
-    'backend_dir': '~/todayi/',
-    'remote': 'GCS',
-    'remote_address': None
+    "backend": "sqlite",
+    "backend_dir": "~/todayi/",
+    "remote": "GCS",
+    "remote_address": None,
 }
 
 
@@ -28,7 +28,7 @@ file_path = path(CONFIG_PATH)
 
 def _check_key(key):
     if key not in DEFAULT_CONFIG.keys():
-        raise IndexError('Config: {} is not valid'.format(key))
+        raise IndexError("Config: {} is not valid".format(key))
 
 
 def _read_config():
@@ -37,6 +37,7 @@ def _read_config():
 
 def _write_config(config):
     return write_file(json.dumps(config), file_path)
+
 
 """
 If config not present, write the default
@@ -77,11 +78,13 @@ class MissingConfigError(Exception):
     """
     Error to use when config values are missing
     """
+
     pass
+
 
 class InvalidConfigError(Exception):
     """
     Error to use when config values are missing
     """
-    pass
 
+    pass

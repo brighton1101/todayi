@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 
 
 class Remote(ABC):
-
     @abstractmethod
     def push(self):
         """

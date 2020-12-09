@@ -5,6 +5,7 @@ class InvalidTagError(Exception):
     """
     Error for attempting to provide invalid tags
     """
+
     pass
 
 
@@ -22,9 +23,6 @@ class Tag:
     def __init__(self, name: str, uuid: str = str(uuid.uuid4())):
         contains_space = any([c.isspace() for c in name])
         if contains_space:
-            raise InvalidTagError('Tags are not allowed to contain whitespace')
+            raise InvalidTagError("Tags are not allowed to contain whitespace")
         self.name = name.lower()
         self.uuid = uuid
-
-
-
