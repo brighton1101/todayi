@@ -3,19 +3,19 @@ Module used to interact with filesystem.
 """
 
 from pathlib import Path
-from typing import Union
+from typing import Union, Tuple
 
 
-def path(fp: str) -> Path:
+def path(*fp: Tuple[str]) -> Path:
     """
     Gets path given within users' home
     directory.
 
     :param fp: file path to expand to users' home directory
-    :type fp: str
+    :type fp: positional args
     :return: Path
     """
-    return Path(fp).expanduser()
+    return Path(*fp).expanduser()
 
 
 def _resolve_fp(fp: Union[str, Path]) -> Path:

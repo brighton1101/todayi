@@ -71,3 +71,17 @@ def set(key: str, value: Any):
     config = _read_config()
     config[key] = value
     _write_config(config)
+
+
+class MissingConfigError(Exception):
+    """
+    Error to use when config values are missing
+    """
+    pass
+
+class InvalidConfigError(Exception):
+    """
+    Error to use when config values are missing
+    """
+    pass
+

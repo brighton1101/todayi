@@ -30,7 +30,9 @@ class Backend(ABC):
     @abstractmethod
     def write_entry(self, entry: Entry):
         """
-        Given an entry, write to db.
+        Given an entry, write to db. Note that
+        this method should reconcile tags provided
+        with entry before inserting into backend.
 
         :param entry: the entry to write
         :type entry: str
