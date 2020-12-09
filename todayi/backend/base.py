@@ -9,7 +9,7 @@ from todayi.model.tag import Tag
 
 class Backend(ABC):
     @abstractmethod
-    def reconcile_tags(tags: List[Tag]) -> List[Tag]:
+    def reconcile_tags(self, tags: List[Tag]) -> List[Tag]:
         """
         Given a list of tags, resolve such that
         the following occurs. For each tag in
@@ -28,7 +28,7 @@ class Backend(ABC):
         pass
 
     @abstractmethod
-    def write_entry(entry: Entry):
+    def write_entry(self, entry: Entry):
         """
         Given an entry, write to db.
 
@@ -39,6 +39,7 @@ class Backend(ABC):
 
     @abstractmethod
     def read_entries(
+        self,
         filter: EntryFilterSettings = EntryFilterSettings(
             after=datetime.now() - timedelta(days=2)
         ),
