@@ -1,4 +1,5 @@
 from datetime import datetime
+import subprocess
 
 from todayi.remote.base import Remote
 from todayi.util.fs import path, InvalidDirectoryError
@@ -90,7 +91,8 @@ class GitRemote(Remote):
 
     def _init_origin(self):
         check_origin_call = self._git_call('config', '--get', 'remote.origin.url')
-        check_origin_out = str(check_origin_call.stdout).strip()
+        check_origin_out = check_origin_call.stdout.decode('utf-8').strip()
+        print(check_origin_out)
         if check_origin_out == "" or check_origin_out is None:
             add_origin_call = self._git_call('remote', 'add', 'origin', self._remote_uri)
             if add_origin_call.returncode != 0:
@@ -103,7 +105,7 @@ class GitRemote(Remote):
 
     def _stash_changes(self):
         stash_call = self._git_call('stash', 'save', '--keep-index', '--include-untracked')
-        stash_call_out = str(stash_call.stdout)
+        stash_call_out = stash_call.stdout.decode('utf-8').strip()
         if stash_call.returncode != 0 and self._no_init_commit not in stash_call_out:
             raise GitException('Unknown error stashing local changes')
 
@@ -129,7 +131,7 @@ class GitRemote(Remote):
 
     def _commit_changes(self):
         commit_message = "'Push to remote {}'".format(
-            datetime.now.strftime("%m.%d.%Y-%H.%M.%S")
+            datetime.now().strftime("%m.%d.%Y-%H.%M.%S")
         )
         commit_call = self._git_call('commit', '-m', commit_message)
         if commit_call.returncode != 0:

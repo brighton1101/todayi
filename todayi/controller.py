@@ -16,6 +16,7 @@ from todayi.model.entry import Entry
 from todayi.model.tag import Tag
 from todayi.remote.base import Remote
 from todayi.remote.gcs import GcsRemote
+from todayi.remote.git import GitRemote
 from todayi.util.fs import path
 
 
@@ -137,6 +138,11 @@ class Controller:
             bucket_name = get_config("gcs_bucket_name")
             remote = GcsRemote(
                 str(self._backend_file_path), self._backend_filename, bucket_name
+            )
+        elif remote_type == "git":
+            remote_uri = get_config("git_remote_uri")
+            remote = GitRemote(
+                str(self._backend_path), remote_uri
             )
         else:
             raise InvalidConfigError(

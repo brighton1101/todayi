@@ -19,8 +19,9 @@ DEFAULT_CONFIG = {
     "backend": "sqlite",
     "backend_dir": "~/todayi/",
     "backend_filename": "todayi.db",
-    "remote": "GCS",
-    "gcs_bucket_name": "balfrey-test",
+    "remote": "gcs",
+    "gcs_bucket_name": "",
+    "git_remote_uri": "",
 }
 
 
