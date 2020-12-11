@@ -1,6 +1,7 @@
 from google.cloud import storage
 
 from todayi.remote.base import Remote
+from todayi.util.fs import path
 
 
 class GcsRemote(Remote):
@@ -32,17 +33,34 @@ class GcsRemote(Remote):
             self._bucket = storage.Client().bucket(self._bucket_name)
         return self._bucket
 
-    def push(self):
+    def push(self, backup: bool = False):
         """
-        Pushes up current state to remote.
+        Pushes up current state to GCS remote. Optionally write
+        backup file to remote.
+
+        :param backup: whether or not to backup remote backend file
+        :type backup: bool
         """
+        if backup == True:
+            self.bucket.rename_blob(
+                self._blob(),
+                self._backup_file_name(self._remote_path)
+            )
         blob = self._blob()
         blob.upload_from_filename(self._local_file_path)
 
-    def pull(self):
+    def pull(self, backup: bool = False):
         """
-        Updates current state from remote.
+        Updates current state from remote. Optionally write
+        local backup file.
+
+        :param backup: whether or not to backup local backend file
+        :type backup: bool
         """
+        if backup == True:
+            path(self._local_file_path).rename(
+                path(self._backup_file_name(self._local_file_path))
+            )
         blob = self._blob()
         blob.download_to_filename(self._local_file_path)
 

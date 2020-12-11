@@ -89,12 +89,12 @@ class Controller:
         terminal_frontend = TerminalFrontend(max_results=display_max)
         terminal_frontend.show(entries)
 
-    def push_remote(self):
+    def push_remote(self, backup_remote: bool = False):
         """
         Pushes current backend to remote. Overwrites
         existing backend in remote.
         """
-        self._remote.push()
+        self._remote.push(backup = backup_remote)
 
     def pull_remote(self, backup_local: bool = False):
         """
@@ -104,17 +104,7 @@ class Controller:
         :param backup_local: optionally backs up local backend file
         :type backup_local: bool
         """
-        if backup_local == True:
-            self._backend_file_path.rename(
-                path(
-                    self._backend_path,
-                    "{}.{}".format(
-                        self._backend_filename,
-                        datetime.now().strftime("%m.%d.%Y-%H.%M.%S"),
-                    ),
-                )
-            )
-        self._remote.pull()
+        self._remote.pull(backup = backup_local)
 
     def _parse_filter_kwargs(self, kwargs):
         filter_kwargs = {}

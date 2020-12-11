@@ -20,7 +20,7 @@ DEFAULT_CONFIG = {
     "backend_dir": "~/todayi/",
     "backend_filename": "todayi.db",
     "remote": "GCS",
-    "gcs_bucket_name": None,
+    "gcs_bucket_name": "balfrey-test",
 }
 
 
