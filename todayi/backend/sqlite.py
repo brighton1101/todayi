@@ -93,7 +93,7 @@ class SqliteBackend(Backend):
 
     def read_entries(
         self,
-        entry_filter: EntryFilterSettings = EntryFilterSettings(
+        filter: EntryFilterSettings = EntryFilterSettings(
             after=datetime.now() - timedelta(days=2)
         ),
     ) -> List[Entry]:
@@ -105,7 +105,7 @@ class SqliteBackend(Backend):
         :type filter: EntryFilterSettings
         :return: List[Entry]
         """
-        dbentries = self._read_entries(entry_filter)
+        dbentries = self._read_entries(filter)
         return [
             Entry(content=e.content, uuid=e.uuid, tags=e.tags, created_at=e.created_at)
             for e in dbentries
