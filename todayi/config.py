@@ -18,8 +18,9 @@ CONFIG_PATH = "~/todayi.config"
 DEFAULT_CONFIG = {
     "backend": "sqlite",
     "backend_dir": "~/todayi/",
+    "backend_filename": "todayi.db",
     "remote": "GCS",
-    "remote_address": None,
+    "gcs_bucket_name": None,
 }
 
 

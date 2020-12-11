@@ -36,12 +36,12 @@ class Frontend(ABC):
     """
 
     _default_attributes = [
-        FrontendAttribute('What was done:', entry_content),
-        FrontendAttribute('When:', entry_when),
-        FrontendAttribute('Tags:', entry_tags_csv_str)
+        FrontendAttribute("What was done:", entry_content),
+        FrontendAttribute("When:", entry_when),
+        FrontendAttribute("Tags:", entry_tags_csv_str),
     ]
 
-    @abstractmethod    
+    @abstractmethod
     def show(self, entries: List[Entry]):
         """
         'Shows' the data, whether that means
@@ -76,7 +76,4 @@ class Frontend(ABC):
         :type entries: List[Entry]
         :return: List[List[str]]
         """
-        return [
-            [a.field(entry) for a in self._default_attributes]
-            for e in entries
-        ]
+        return [[a.field(entry) for a in self._default_attributes] for e in entries]

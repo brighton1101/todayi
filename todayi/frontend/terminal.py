@@ -2,7 +2,13 @@ from typing import List
 
 from prettytable import PrettyTable
 
-from todayi.frontend.base import Frontend, FrontendAttribute as Attr, entry_tags_csv_str, entry_when, entry_content
+from todayi.frontend.base import (
+    Frontend,
+    FrontendAttribute as Attr,
+    entry_tags_csv_str,
+    entry_when,
+    entry_content,
+)
 from todayi.model.entry import Entry
 
 
@@ -23,7 +29,7 @@ class TerminalFrontend(Frontend):
         :type entries: List[Entry]
         """
         entries = sorted(entries, key=lambda e: e.created_at, reverse=True)
-        entries = entries[0:min(len(entries), self._max_results)]
+        entries = entries[0 : min(len(entries), self._max_results)]
         if len(entries) == 0:
             print("No matching entries...")
             return
