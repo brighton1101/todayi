@@ -43,8 +43,7 @@ class GcsRemote(Remote):
         """
         if backup == True:
             self.bucket.rename_blob(
-                self._blob(),
-                self._backup_file_name(self._remote_path)
+                self._blob(), self._backup_file_name(self._remote_path)
             )
         blob = self._blob()
         blob.upload_from_filename(self._local_file_path)

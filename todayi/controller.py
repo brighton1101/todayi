@@ -95,7 +95,7 @@ class Controller:
         Pushes current backend to remote. Overwrites
         existing backend in remote.
         """
-        self._remote.push(backup = backup_remote)
+        self._remote.push(backup=backup_remote)
 
     def pull_remote(self, backup_local: bool = False):
         """
@@ -105,7 +105,7 @@ class Controller:
         :param backup_local: optionally backs up local backend file
         :type backup_local: bool
         """
-        self._remote.pull(backup = backup_local)
+        self._remote.pull(backup=backup_local)
 
     def _parse_filter_kwargs(self, kwargs):
         filter_kwargs = {}
@@ -141,9 +141,7 @@ class Controller:
             )
         elif remote_type == "git":
             remote_uri = get_config("git_remote_uri")
-            remote = GitRemote(
-                str(self._backend_path), remote_uri
-            )
+            remote = GitRemote(str(self._backend_path), remote_uri)
         else:
             raise InvalidConfigError(
                 "Remote type: {} not supported".format(remote_type)

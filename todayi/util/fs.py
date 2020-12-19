@@ -36,5 +36,6 @@ def file_text(fp: Union[str, Path]) -> str:
 def write_file(content: str, fp: Union[str, Path]):
     return _resolve_fp(fp).write_text(content)
 
+
 class InvalidDirectoryError(Exception):
     pass

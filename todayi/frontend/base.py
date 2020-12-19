@@ -76,4 +76,15 @@ class Frontend(ABC):
         :type entries: List[Entry]
         :return: List[List[str]]
         """
-        return [[a.field(entry) for a in self._default_attributes] for e in entries]
+        return [[a.field(e) for a in self._default_attributes] for e in entries]
+
+
+class FileFrontend(Frontend, ABC):
+    @abstractmethod
+    def to_string(self, entries: List[Entry]) -> str:
+        """
+        Does the same thing as `Frontend.show`,
+        but instead of writing to file returns
+        file contents as string
+        """
+        pass

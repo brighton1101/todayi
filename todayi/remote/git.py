@@ -45,9 +45,7 @@ class GitRemote(Remote):
         """
         assert self.initialized == True
         if backup == True:
-            raise NotImplementedError(
-                'Backup logic not configured for GitRemote.push'
-            )
+            raise NotImplementedError("Backup logic not configured for GitRemote.push")
         else:
             self._stage_changes()
             self._commit_changes()
@@ -65,9 +63,7 @@ class GitRemote(Remote):
         """
         assert self.initialized == True
         if backup == True:
-            raise NotImplementedError(
-                'Backup logic not configured for GitRemote.pull'
-            )
+            raise NotImplementedError("Backup logic not configured for GitRemote.pull")
         else:
             self._stash_changes()
             try:
@@ -79,80 +75,87 @@ class GitRemote(Remote):
     def _init_repo(self):
         backend_path = path(self._local_backend_path)
         if not backend_path.exists() or not backend_path.is_dir():
-            raise InvalidDirectoryError('Could not find backend directory')
-        git_subdir = path(backend_path, '.git')
+            raise InvalidDirectoryError("Could not find backend directory")
+        git_subdir = path(backend_path, ".git")
         if not git_subdir.exists():
-            init_call = self._git_call('init')
+            init_call = self._git_call("init")
             if init_call.returncode != 0:
-                raise GitException('Could not initialize repo in {}'.format(
-                    self._local_backend_path
-                ))
+                raise GitException(
+                    "Could not initialize repo in {}".format(self._local_backend_path)
+                )
         self._init_checked = True
 
     def _init_origin(self):
-        check_origin_call = self._git_call('config', '--get', 'remote.origin.url')
-        check_origin_out = check_origin_call.stdout.decode('utf-8').strip()
+        check_origin_call = self._git_call("config", "--get", "remote.origin.url")
+        check_origin_out = check_origin_call.stdout.strip()
         print(check_origin_out)
         if check_origin_out == "" or check_origin_out is None:
-            add_origin_call = self._git_call('remote', 'add', 'origin', self._remote_uri)
+            add_origin_call = self._git_call(
+                "remote", "add", "origin", self._remote_uri
+            )
             if add_origin_call.returncode != 0:
-                raise GitException('Unknown error occurred setting up remote')
+                raise GitException("Unknown error occurred setting up remote")
         elif check_origin_out != self._remote_uri:
-            reset_origin_call = self._git_call('remote', 'set-url', 'origin', self._remote_uri)
+            reset_origin_call = self._git_call(
+                "remote", "set-url", "origin", self._remote_uri
+            )
             if reset_origin_call.returncode != 0:
                 raise GitException("Unknown error occurred resetting remote")
         self._origin_checked = True
 
     def _stash_changes(self):
-        stash_call = self._git_call('stash', 'save', '--keep-index', '--include-untracked')
-        stash_call_out = stash_call.stdout.decode('utf-8').strip()
+        stash_call = self._git_call(
+            "stash", "save", "--keep-index", "--include-untracked"
+        )
+        stash_call_out = stash_call.stdout.strip()
         if stash_call.returncode != 0 and self._no_init_commit not in stash_call_out:
-            raise GitException('Unknown error stashing local changes')
+            raise GitException("Unknown error stashing local changes")
 
     def _rollback_from_stash(self):
-        stash_call = self._git_call('stash', 'pop')
+        stash_call = self._git_call("stash", "pop")
         if stash_call.returncode != 0:
             raise GitException("Unknown error rolling back from local stash")
 
     def _reset_from_origin(self):
         def _reset_error():
-            raise GitException("Could not reset from origin/master. If nothing exists yet in origin, this is to be expected")
-        fetch_call = self._git_call('fetch', 'origin', 'master')
+            raise GitException(
+                "Could not reset from origin/master. If nothing exists yet in origin, this is to be expected"
+            )
+
+        fetch_call = self._git_call("fetch", "origin", "master")
         if fetch_call.returncode != 0:
             _reset_error()
-        reset_call = self._git_call('reset', '--hard', 'origin/master')
+        reset_call = self._git_call("reset", "--hard", "origin/master")
         if reset_call.returncode != 0:
             _reset_error()
 
     def _stage_changes(self):
-        stage_call = self._git_call('add', '--all')
+        stage_call = self._git_call("add", "--all")
         if stage_call.returncode != 0:
-            raise GitException('Problem adding changes to staging')
+            raise GitException("Problem adding changes to staging")
 
     def _commit_changes(self):
         commit_message = "'Push to remote {}'".format(
             datetime.now().strftime("%m.%d.%Y-%H.%M.%S")
         )
-        commit_call = self._git_call('commit', '-m', commit_message)
+        commit_call = self._git_call("commit", "-m", commit_message)
         if commit_call.returncode != 0:
-            raise GitException('Could not commit staged changes.')
+            raise GitException("Could not commit staged changes.")
 
     def _push_changes(self, force=False):
-        push_args = ['push', 'origin', '-u', 'master']
+        push_args = ["push", "origin", "-u", "master"]
         if force == True:
-            push_args.append('--force')
+            push_args.append("--force")
         push_args = tuple(push_args)
         push_call = self._git_call(*push_args)
         if push_call.returncode != 0:
-            raise GitException('Could not push committed changes')
+            raise GitException("Could not push committed changes")
 
     def _git_call(self, *args):
-        call_args = ['git']
+        call_args = ["git"]
         call_args.extend(args)
         return subprocess.run(
-            call_args,
-            cwd=str(self._local_backend_path),
-            capture_output=True
+            call_args, cwd=str(self._local_backend_path), capture_output=True, text=True
         )
 
 
