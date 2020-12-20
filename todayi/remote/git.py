@@ -1,3 +1,9 @@
+"""
+This is experimental. Use at your own risk. Versioning is
+not properly used here, so force pushes may overwrite
+content at remote.
+"""
+
 from datetime import datetime
 import subprocess
 
