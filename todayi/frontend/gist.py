@@ -8,6 +8,19 @@ from todayi.model.entry import Entry
 
 
 class GistFrontend(Frontend):
+    """
+    For posting injected FileFrontend's contents to a Github Gist,
+    rather than writing directly to file.
+
+    :param auth: Github auth token
+    :type auth: str
+    :param gist_name: extensionless name of gist
+    :type gist_name: str
+    :param ff: file frontend to produce desired content type
+    :type ff: FileFrontend
+    :param public: Optionally make gist public (default not)
+    :type public: bool
+    """
 
     _gist_endpoint = "https://api.github.com/gists"
 
