@@ -22,6 +22,7 @@ DEFAULT_CONFIG = {
     "remote": "gcs",
     "gcs_bucket_name": "",
     "git_remote_uri": "",
+    "github_auth_token": "",
 }
 
 

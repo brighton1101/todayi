@@ -83,6 +83,8 @@ class SingleTagSection(MdSection):
 
 class MarkdownFrontend(FileFrontend):
 
+    extension = "md"
+
     allowed_section_groupings = {
         "created_at": DateSection,
         "single_tag": SingleTagSection,

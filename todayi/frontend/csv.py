@@ -15,6 +15,8 @@ from todayi.util.fs import write_file
 
 class CsvFrontend(FileFrontend):
 
+    extension = "csv"
+
     _default_attributes = [
         FrontendAttribute("content", entry_content),
         FrontendAttribute("when", entry_when),

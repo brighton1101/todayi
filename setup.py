@@ -6,5 +6,5 @@ setup(
     author="Brighton Balfrey",
     author_email="balfrey@usc.edu",
     packages=find_packages(),
-    install_requires=["SQLAlchemy==1.3.20"],
+    install_requires=["SQLAlchemy==1.3.20", "Jinja2==2.11.2", "google-cloud-storage==1.33.0", "click==7.1.2", "requests==2.25.0"],
 )

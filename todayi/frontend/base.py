@@ -80,6 +80,9 @@ class Frontend(ABC):
 
 
 class FileFrontend(Frontend, ABC):
+
+    extension = ""
+
     @abstractmethod
     def to_string(self, entries: List[Entry]) -> str:
         """
