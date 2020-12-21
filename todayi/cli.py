@@ -40,7 +40,7 @@ def set_default_subparser(self, name):
 
 
 def run():
-    filter_kwargs = Controller.filter_kwargs
+    filter_kwargs = Controller.filter_kwargs.keys()
 
     def add_filter_kwargs(sp):
         sp.add_argument(

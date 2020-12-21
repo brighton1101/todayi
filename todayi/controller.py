@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import List
+from typing import List, Union
 
 from todayi.backend.base import Backend
 from todayi.backend.filter import EntryFilterSettings
@@ -28,16 +28,33 @@ class Controller:
     Main application controller that coordinates resources.
     """
 
-    def parse_comma_sep(s: str) -> List[str]:
-        o = [s.split(",")]
+    """
+    Helper functions to parse filtering command line
+    args.
+    """
+    def parse_comma_sep(s: Union[str, List[str]]) -> List[str]:
+        if isinstance(s, list):
+            return s
+        o = s.split(",")
         return [e.strip() for e in o]
 
-    def parse_datetime(d: str) -> datetime:
+    def parse_datetime(d: Union[str, datetime]) -> datetime:
+        if isinstance(d, datetime):
+            return d
         return datetime.strptime(d.strip(), "%m/%d/%Y")
 
     def parse_str(s: str) -> str:
         return s.strip()
 
+    def parse_tags(s: Union[str, List[str]]) -> List[Tag]:
+        if isinstance(s, str):
+            s = Controller.parse_comma_sep(s)
+        return [Tag(t) for t in s]
+
+    """
+    Available filter kwargs, as to be passed in via
+    cli.
+    """
     filter_kwargs = {
         "content_contains": parse_str,
         "content_equals": parse_str,
@@ -45,8 +62,8 @@ class Controller:
         "content_not_equals": parse_str,
         "after": parse_datetime,
         "before": parse_datetime,
-        "with_tags": parse_comma_sep,
-        "without_tags": parse_comma_sep,
+        "with_tags": parse_tags,
+        "without_tags": parse_tags,
     }
 
     _file_frontends = {
