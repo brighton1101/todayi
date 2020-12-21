@@ -83,6 +83,9 @@ class FileFrontend(Frontend, ABC):
 
     extension = ""
 
+    def __init__(self, output_file: str):
+        self._output_file = output_file
+
     @abstractmethod
     def to_string(self, entries: List[Entry]) -> str:
         """

@@ -27,10 +27,12 @@ class MdSection(ABC):
         return self._bullets
 
     def extract_bullet(self, e: Entry):
-        return "{} - {} - Tags: {}".format(
+        return "{} - {}{}".format(
             e.created_at.strftime(self.bullet_datetime_format),
             e.content,
-            ", ".join([t.name for t in e.tags]),
+            ""
+            if len(e.tags) < 1
+            else " - Tags: {}".format(", ".join([t.name for t in e.tags])),
         )
 
     def sort_section_entries(self, entries: List[Entry]):
@@ -93,14 +95,14 @@ class MarkdownFrontend(FileFrontend):
     template = Template(
         """{% for section in sections %}
 ## {{section.name}}:{% for bullet in section.bullets %}
-- {{bullet}}{% endfor %}{% endfor %}
+- {{bullet}}{% endfor %}
+{% endfor %}
     """.strip(
             "\n"
         )
     )
 
     def __init__(self, output_file: str, section_grouping: str = "created_at"):
-        self._output_file = output_file
         if section_grouping not in self.allowed_section_groupings.keys():
             raise KeyError(
                 "Invalid section grouping. Allowed: \n {}".format(
@@ -108,6 +110,7 @@ class MarkdownFrontend(FileFrontend):
                 )
             )
         self._group_by = section_grouping
+        FileFrontend.__init__(self, output_file)
 
     def show(self, entries: List[Entry]):
         """

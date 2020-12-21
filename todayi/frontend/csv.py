@@ -23,9 +23,6 @@ class CsvFrontend(FileFrontend):
         FrontendAttribute("tags", entry_tags_csv_str),
     ]
 
-    def __init__(self, output_file: str):
-        self._output_file = output_file
-
     def show(self, entries: List[Entry]):
         """
         Creates markdown from list of entries ordered

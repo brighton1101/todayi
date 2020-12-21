@@ -12,6 +12,9 @@ from todayi.config import (
     InvalidConfigError,
 )
 from todayi.frontend.terminal import TerminalFrontend
+from todayi.frontend.csv import CsvFrontend
+from todayi.frontend.gist import GistFrontend
+from todayi.frontend.md import MarkdownFrontend
 from todayi.model.entry import Entry
 from todayi.model.tag import Tag
 from todayi.remote.base import Remote
@@ -25,21 +28,36 @@ class Controller:
     Main application controller that coordinates resources.
     """
 
-    _filter_kwargs = [
-        "content_contains",
-        "content_equals",
-        "content_not_contains",
-        "content_not_equals",
-        "after",
-        "before",
-        "with_tags",
-        "without_tags",
-    ]
+    def parse_comma_sep(s: str) -> List[str]:
+        o = [s.split(",")]
+        return [e.strip() for e in o]
+
+    def parse_datetime(d: str) -> datetime:
+        return datetime.strptime(d.strip(), "%m/%d/%Y")
+
+    def parse_str(s: str) -> str:
+        return s.strip()
+
+    filter_kwargs = {
+        "content_contains": parse_str,
+        "content_equals": parse_str,
+        "content_not_contains": parse_str,
+        "content_not_equals": parse_str,
+        "after": parse_datetime,
+        "before": parse_datetime,
+        "with_tags": parse_comma_sep,
+        "without_tags": parse_comma_sep,
+    }
+
+    _file_frontends = {
+        "csv": CsvFrontend,
+        "md": MarkdownFrontend,
+    }
 
     def __init__(self):
         self._cached_backend = None
         self._cached_remote = None
-        self._filter_kwargs = set(self._filter_kwargs)
+        self._filter_kwargs = self.filter_kwargs
 
     @property
     def _backend(self) -> Backend:
@@ -68,23 +86,19 @@ class Controller:
         entry = Entry(content, tags=tags)
         self._backend.write_entry(entry)
 
-    def print_entries(
-        self,
-        display_max: int = 10,
-        after: datetime = datetime.now() - timedelta(days=1),
-        **kwargs
-    ):
+    def print_entries(self, display_max: int = 10, **kwargs):
         """
         Prints entries to terminal. By default, limits to
-        the previous 10 results and shows up to 10.
+        the previous 10 results and shows only results for
+        the last day.
 
         Default kwargs:
         :param display_max: max # of results to show
         :type display_max: int
-        :param after: datetime to print entries after
-        :see: `Controller._filter_kwargs` for more display options
+        :see: `Controller.filter_kwargs` for more display options
         """
-        kwargs["after"] = after
+        after = kwargs["after"]
+        kwargs["after"] = datetime.now() - timedelta(days=1) if after is None else after
         filter_settings = self._parse_filter_kwargs(kwargs)
         entries = self._backend.read_entries(filter=filter_settings)
         terminal_frontend = TerminalFrontend(max_results=display_max)
@@ -107,13 +121,72 @@ class Controller:
         """
         self._remote.pull(backup=backup_local)
 
+    def file_report(self, format: str, output_file: str, **kwargs):
+        """
+        Generates a file report of entries.
+
+        :param format: file format to use. see `Controller._file_frontends`
+                       for configuration
+        :type format: str
+        :param output_file: absolute path to file location to output report
+        :type output_file: str
+        :see: `Controller.filter_kwargs` for more display options
+        """
+        filter_settings = self._parse_filter_kwargs(kwargs)
+        entries = self._backend.read_entries(filter=filter_settings)
+        frontend = self._init_file_frontend(format, output_file)
+        frontend.show(entries)
+
+    def gist_report(
+        self, format: str, output_name: str, public: bool = False, **kwargs
+    ):
+        """
+        Generates a Github gist report with given file format of entries.
+
+        :param format: file format to use. see `Controller._file_frontends`
+                       for configuration
+        :type format: str
+        :param output_name: name of gist (not including extension)
+        :type output_name: str
+        :param public: whether or not to make gist public (by default False)
+        :type public: bool
+        :see: `Controller.filter_kwargs` for more display options
+        """
+        filter_settings = self._parse_filter_kwargs(kwargs)
+        print(filter_settings)
+        entries = self._backend.read_entries(filter=filter_settings)
+        if len(entries) < 1:
+            raise NoMatchingEntriesError(
+                "No matching entries. Github does not allow for empty gists."
+            )
+        auth_token = get_config("github_auth_token")
+        if auth_token is None or auth_token == "":
+            raise MissingConfigError(
+                "Could not find auth token for ghub. Please provide the config key `github_auth_token` with a valid auth token and try again"
+            )
+        ff = self._init_file_frontend(format, output_name)
+        gf = GistFrontend(auth_token, output_name, ff, public=public)
+        gf.show(entries)
+
+    def read_config(self, key: str) -> str:
+        return get_config(key)
+
+    def write_config(self, key: str, val: str):
+        set_config(key, val.strip())
+
+    def _init_file_frontend(self, form: str, o_file: str):
+        ff = self._file_frontends.get(form)
+        if ff is None:
+            raise TypeError("Invalid file frontend format: {}".format(form))
+        return ff(o_file)
+
     def _parse_filter_kwargs(self, kwargs):
         filter_kwargs = {}
         for kwarg, value in kwargs.items():
             if kwarg not in self._filter_kwargs:
                 raise TypeError("Invalid kwarg: {}".format(kwarg))
-            else:
-                filter_kwargs[kwarg] = value
+            elif value != None:
+                filter_kwargs[kwarg] = self._filter_kwargs.get(kwarg)(value)
         return EntryFilterSettings(**filter_kwargs)
 
     def _init_backend(self):
@@ -166,3 +239,7 @@ class Controller:
     @property
     def _backend_file_path(self) -> Path:
         return path(self._backend_path, self._backend_filename)
+
+
+class NoMatchingEntriesError(Exception):
+    pass
