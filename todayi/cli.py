@@ -84,7 +84,7 @@ def run():
             "-wt",
             "--with-tags",
             dest="with_tags",
-            help="Show content with tags (Comma separated)",
+            help="Show content that has tags (Comma separated)",
         )
         sp.add_argument(
             "--without-tags",
