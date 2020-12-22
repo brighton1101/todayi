@@ -1,8 +1,8 @@
 # todayi
 
-## Currently this project is in its early stages. Remote functionality is weak, especially with regards to backing files up. Use at your own discretion.
+#### Currently this project is in its early stages. Remote functionality is weak, especially with regards to backing files up. Use at your own discretion.
 
-## A cli that lets you keep track of what you do throughout the day with a single command:
+#### A cli that lets you keep track of what you do throughout the day with a single command:
 
 ```sh
 🌴🌴🌴 todayi (master) $ todayi "Did something more with xyz and terraform" -t xyz terraform
