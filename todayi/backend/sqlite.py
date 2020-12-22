@@ -9,6 +9,7 @@ from sqlalchemy import (
     String,
     DateTime,
     ForeignKey,
+    func,
 )
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -176,11 +177,19 @@ class SqliteBackend(Backend):
             query = query.filter(SqliteEntry.created_at <= entry_filter.before)
 
         # Tag filtering
+        # https://stackoverflow.com/questions/3267609
         if entry_filter.with_tags is not None:
             resolved_tags = self._reconcile_tags(entry_filter.with_tags)
-            query = query.filter(SqliteEntry.tags.in_(resolved_tags))
+            query = query.join(association_table)
+            query = query.join(SqliteTag)
+            query = query.filter(SqliteTag.id.in_(r.id for r in resolved_tags))
+            query = query.group_by(SqliteEntry.id)
+            query = query.having(func.count(SqliteTag.id) == len(resolved_tags))
         if entry_filter.without_tags is not None:
             resolved_tags = self._reconcile_tags(entry_filter.without_tags)
-            query = query.filter(~SqliteEntry.tags.in_(resolved_tags))
+            subquery = self._session.query(association_table.c.entry_id)
+            for r in resolved_tags:
+                subquery = subquery.filter(association_table.c.tag_id == r.id)
+            query = query.filter(SqliteEntry.id.notin_(subquery))
 
         return query.all()
