@@ -76,4 +76,9 @@ gcs
 Note that all of the above is extremely easy to add on to
 
 ### Development:
-- `more to come`
+- clone the repo, and cd into the root of the directory
+- ensure python version 3.7+ is installed
+- run `pip3 install -e .`
+- run `pre-commit install`
+- test pre-commit by running `pre-commit run --all-files`
+
