@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from todayi.backend.sqlite import SqliteBackend, SqliteEntry, SqliteTag
 from todayi.backend.filter import EntryFilterSettings
 from todayi.model.tag import Tag
@@ -99,4 +101,29 @@ def test_read_entries_content_filtering():
 
 
 def test_read_entries_datetime_filtering():
-    pass
+    backend = SqliteBackend(":memory:")
+    session = backend._session
+    entries = [
+        SqliteEntry(
+            content="Early entry",
+            uuid="r",
+            created_at=datetime.now() - timedelta(days=5),
+        ),
+        SqliteEntry(
+            content="Later entry",
+            uuid="r",
+            created_at=datetime.now() - timedelta(days=1),
+        ),
+    ]
+    session.add_all(entries)
+    session.commit()
+    early = backend.read_entries(
+        EntryFilterSettings(before=datetime.now() - timedelta(days=4))
+    )
+    assert len(early) == 1
+    assert early[0].content == "Early entry"
+    late = backend.read_entries(
+        EntryFilterSettings(after=datetime.now() - timedelta(days=2))
+    )
+    assert len(late) == 1
+    assert late[0].content == "Later entry"

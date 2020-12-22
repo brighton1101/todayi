@@ -178,7 +178,7 @@ class SqliteBackend(Backend):
 
         def matching_entries_to_tags(rt: List[SqliteTag]) -> List[int]:
             """
-            Get matching entry id's to tags
+            Get matching entry id's that contain all of the tags
 
             :see: https://stackoverflow.com/questions/3267609
             """
@@ -197,8 +197,11 @@ class SqliteBackend(Backend):
             )
         if entry_filter.without_tags is not None:
             resolved_tags = self._reconcile_tags(entry_filter.without_tags)
-            query = query.filter(
-                SqliteEntry.id.notin_(matching_entries_to_tags(resolved_tags))
+            subquery = self._session.query(association_table.c.entry_id)
+            subquery = subquery.filter(
+                association_table.c.tag_id.in_(r.id for r in resolved_tags)
             )
+            bad_entry_ids = [e.entry_id for e in subquery.all()]
+            query = query.filter(SqliteEntry.id.notin_(bad_entry_ids))
 
         return query.all()
