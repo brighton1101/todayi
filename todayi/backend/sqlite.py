@@ -176,20 +176,29 @@ class SqliteBackend(Backend):
         if entry_filter.before is not None:
             query = query.filter(SqliteEntry.created_at <= entry_filter.before)
 
-        # Tag filtering
-        # https://stackoverflow.com/questions/3267609
+        def matching_entries_to_tags(rt: List[SqliteTag]) -> List[int]:
+            """
+            Get matching entry id's to tags
+
+            :see: https://stackoverflow.com/questions/3267609
+            """
+            subquery = self._session.query(SqliteEntry.id)
+            subquery = subquery.join(association_table)
+            subquery = subquery.join(SqliteTag)
+            subquery = subquery.filter(SqliteTag.id.in_(r.id for r in resolved_tags))
+            subquery = subquery.group_by(SqliteEntry.id)
+            subquery = subquery.having(func.count(SqliteTag.id) == len(resolved_tags))
+            return [e.id for e in subquery.all()]
+
         if entry_filter.with_tags is not None:
             resolved_tags = self._reconcile_tags(entry_filter.with_tags)
-            query = query.join(association_table)
-            query = query.join(SqliteTag)
-            query = query.filter(SqliteTag.id.in_(r.id for r in resolved_tags))
-            query = query.group_by(SqliteEntry.id)
-            query = query.having(func.count(SqliteTag.id) == len(resolved_tags))
+            query = query.filter(
+                SqliteEntry.id.in_(matching_entries_to_tags(resolved_tags))
+            )
         if entry_filter.without_tags is not None:
             resolved_tags = self._reconcile_tags(entry_filter.without_tags)
-            subquery = self._session.query(association_table.c.entry_id)
-            for r in resolved_tags:
-                subquery = subquery.filter(association_table.c.tag_id == r.id)
-            query = query.filter(SqliteEntry.id.notin_(subquery))
+            query = query.filter(
+                SqliteEntry.id.notin_(matching_entries_to_tags(resolved_tags))
+            )
 
         return query.all()

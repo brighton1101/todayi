@@ -171,6 +171,7 @@ def run():
         "--tags",
         nargs="*",
         help="Single word identifying tags. Example `-t hello world` would leave the tags hello and world. Tags should only come after content",  # noqa
+        default=[],
     )
 
     parser.set_default_subparser("default")
