@@ -16,5 +16,6 @@ setup(
         "Jinja2==2.11.2",
         "google-cloud-storage==1.33.0",
         "requests==2.25.0",
+        "prettytable==2.0.0",
     ],
 )

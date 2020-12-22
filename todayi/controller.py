@@ -171,7 +171,6 @@ class Controller:
         :see: `Controller.filter_kwargs` for more display options
         """
         filter_settings = self._parse_filter_kwargs(kwargs)
-        print(filter_settings)
         entries = self._backend.read_entries(filter=filter_settings)
         if len(entries) < 1:
             raise NoMatchingEntriesError(
