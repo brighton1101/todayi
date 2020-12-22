@@ -20,7 +20,7 @@ def is_iterable(obj: Any, allow_str: bool = False):
     if isinstance(obj, str) and not allow_str:
         return False
     try:
-        it = iter(obj)
+        it = iter(obj)  # noqa
     except TypeError:
         return False
     return True

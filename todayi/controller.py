@@ -180,7 +180,8 @@ class Controller:
         auth_token = get_config("github_auth_token")
         if auth_token is None or auth_token == "":
             raise MissingConfigError(
-                "Could not find auth token for ghub. Please provide the config key `github_auth_token` with a valid auth token and try again"
+                "Could not find auth token for ghub. Please provide the config key "
+                "`github_auth_token` with a valid auth token and try again"
             )
         ff = self._init_file_frontend(format, output_name)
         gf = GistFrontend(auth_token, output_name, ff, public=public)
@@ -203,7 +204,7 @@ class Controller:
         for kwarg, value in kwargs.items():
             if kwarg not in self._filter_kwargs:
                 raise TypeError("Invalid kwarg: {}".format(kwarg))
-            elif value != None:
+            elif value is not None:
                 filter_kwargs[kwarg] = self._filter_kwargs.get(kwarg)(value)
         return EntryFilterSettings(**filter_kwargs)
 

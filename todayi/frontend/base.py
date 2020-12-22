@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 from typing import Any, Callable, List, Union
 
 from todayi.model.entry import Entry
@@ -14,7 +13,7 @@ def entry_tags_csv_str(e: Entry) -> str:
 
 
 def entry_when(e: Entry, time: bool = False) -> str:
-    if time == True:
+    if time is True:
         return e.created_at.strftime("%Y-%m-%d %H:%M")
     return e.created_at.strftime("%Y-%m-%d")
 
@@ -67,8 +66,10 @@ class Frontend(ABC):
 
         Example:
         ```
-        >>> entries = [Entry(content='Hello world', created_at=datetime.now(), tags=['hello'])]
-        >>> self._default_attributes = [FrontendAttribute('Content', lambda e: e.content)]
+        >>> entries = [Entry(content='Hello world',
+            created_at=datetime.now(), tags=['hello'])]
+        >>> self._default_attributes = [FrontendAttribute('Content',
+            lambda e: e.content)]
         >>> self._parse_rows(entries)
         [['Hello world']]
 

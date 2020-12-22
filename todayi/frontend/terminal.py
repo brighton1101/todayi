@@ -2,13 +2,7 @@ from typing import List
 
 from prettytable import PrettyTable
 
-from todayi.frontend.base import (
-    Frontend,
-    FrontendAttribute as Attr,
-    entry_tags_csv_str,
-    entry_when,
-    entry_content,
-)
+from todayi.frontend.base import Frontend
 from todayi.model.entry import Entry
 
 

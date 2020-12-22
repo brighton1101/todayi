@@ -34,9 +34,9 @@ class GitRemote(Remote):
 
     @property
     def initialized(self):
-        if self._init_checked == False:
+        if self._init_checked is False:
             self._init_repo()
-        if self._origin_checked == False:
+        if self._origin_checked is False:
             self._init_origin()
         return True
 
@@ -49,8 +49,8 @@ class GitRemote(Remote):
         :param backup: whether or not to backup on the remote
         :type backup: bool
         """
-        assert self.initialized == True
-        if backup == True:
+        assert self.initialized is True
+        if backup is True:
             raise NotImplementedError("Backup logic not configured for GitRemote.push")
         else:
             self._stage_changes()
@@ -67,8 +67,8 @@ class GitRemote(Remote):
         :param backup: whether or not to backup locally
         :type backup: bool
         """
-        assert self.initialized == True
-        if backup == True:
+        assert self.initialized is True
+        if backup is True:
             raise NotImplementedError("Backup logic not configured for GitRemote.pull")
         else:
             self._stash_changes()
@@ -125,7 +125,8 @@ class GitRemote(Remote):
     def _reset_from_origin(self):
         def _reset_error():
             raise GitException(
-                "Could not reset from origin/master. If nothing exists yet in origin, this is to be expected"
+                "Could not reset from origin/master. If nothing "
+                "exists yet in origin, this is to be expected"
             )
 
         fetch_call = self._git_call("fetch", "origin", "master")
@@ -150,7 +151,7 @@ class GitRemote(Remote):
 
     def _push_changes(self, force=False):
         push_args = ["push", "origin", "-u", "master"]
-        if force == True:
+        if force is True:
             push_args.append("--force")
         push_args = tuple(push_args)
         push_call = self._git_call(*push_args)

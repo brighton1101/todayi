@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from collections import defaultdict
-from dataclasses import dataclass
-from typing import Any, Callable, List, Optional
+from typing import Any, List, Optional
 
 from jinja2 import Template
 

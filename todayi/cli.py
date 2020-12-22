@@ -6,14 +6,15 @@ from todayi.controller import Controller
 from todayi.util.iter import is_iterable
 
 
-description = """    
+description = """
 todayi: Keep track of what you do today, and just forget about it.
 Writes what you do, everyday, to a backend. Then, retrieve the results
 later without having to remember a single thing.
 
-Example usage: `todayi "Figured out how to do xyz in GCP w terraform" -t gcp terraform xyz`.
-Will produce an entry in your record with the date it was created, text with the description,
-and tag the entry with keywords gcp, terraform, and xyz.
+Example usage:
+`todayi "Figured out how to do xyz in GCP w terraform" -t gcp terraform xyz`.
+Will produce an entry in your record with the date it was created,
+ text with the description, and tag the entry with keywords gcp, terraform, and xyz.
 """
 
 
@@ -131,7 +132,7 @@ def run():
     report_parser.add_argument(
         "--gist",
         action="store_true",
-        help="Create gist instead of local output. Note that output-file will become gist name.",
+        help="Create gist instead of local output. Note that output-file will become gist name.",  # noqa
     )
     report_parser.add_argument(
         "--public", action="store_true", help="If creating gist, make gist public."
@@ -160,7 +161,7 @@ def run():
     # Default
     default_parser = subparsers.add_parser(
         "default",
-        help="Default command. `todayi [content][tags]`. For more info `todayi default -h`",
+        help="Default command. `todayi [content][tags]`. For more info `todayi default -h`",  # noqa
     )
     default_parser.add_argument(
         "content", nargs="*", help="Content of what you are trying to log you did."
@@ -169,7 +170,7 @@ def run():
         "-t",
         "--tags",
         nargs="*",
-        help="Single word identifying tags. Example `-t hello world` would leave the tags hello and world. Tags should only come after content",
+        help="Single word identifying tags. Example `-t hello world` would leave the tags hello and world. Tags should only come after content",  # noqa
     )
 
     parser.set_default_subparser("default")
@@ -197,7 +198,7 @@ def run():
         gist = args.gist
         public = args.public
         filter_kwargs = get_filter_kwargs(args)
-        if gist == True:
+        if gist is True:
             controller.gist_report(form, ofile, public=public, **filter_kwargs)
         else:
             controller.file_report(form, ofile, **filter_kwargs)

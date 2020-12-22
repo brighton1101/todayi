@@ -41,7 +41,7 @@ class GcsRemote(Remote):
         :param backup: whether or not to backup remote backend file
         :type backup: bool
         """
-        if backup == True:
+        if backup is True:
             self.bucket.rename_blob(
                 self._blob(), self._backup_file_name(self._remote_path)
             )
@@ -56,7 +56,7 @@ class GcsRemote(Remote):
         :param backup: whether or not to backup local backend file
         :type backup: bool
         """
-        if backup == True:
+        if backup is True:
             path(self._local_file_path).rename(
                 path(self._backup_file_name(self._local_file_path))
             )
