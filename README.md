@@ -87,7 +87,10 @@ Note that all of the above is extremely easy to add on to
 ### Development:
 - clone the repo, and cd into the root of the directory
 - ensure python version 3.7+ is installed
+- create virtual env: `python3 -m venv venv`
+- activate virtual env: `source venv/bin/activate`
 - run `pip3 install -e .`
+- run `pip3 install -r dev-requirements.txt`
 - run `pre-commit install`
 - test pre-commit by running `pre-commit run --all-files`
 
