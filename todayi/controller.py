@@ -32,6 +32,7 @@ class Controller:
     Helper functions to parse filtering command line
     args.
     """
+
     def parse_comma_sep(s: Union[str, List[str]]) -> List[str]:
         if isinstance(s, list):
             return s
