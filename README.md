@@ -1,8 +1,8 @@
 # todayi
 
-#### Currently this project is in its early stages. Remote functionality is weak, especially with regards to backing files up. Use at your own discretion.
+### Currently this project is in its early stages. Remote functionality is weak, especially with regards to backing files up. Use at your own discretion.
 
-#### A cli that lets you keep track of what you do throughout the day with a single command:
+### A cli that lets you keep track of what you do throughout the day with a single command:
 
 ```sh
 🌴🌴🌴 todayi (master) $ todayi "Did something more with xyz and terraform" -t xyz terraform
@@ -60,6 +60,15 @@ And then you can view that configuration easily.
 🌴🌴🌴 todayi (master) $ todayi config get remote
 gcs
 ```
+
+### Motivation:
+tl;dr: Log what you do throughout the day so
+- you're prepared for standups
+- you're prepared for performance reviews
+- you can remember what you did that intense week six months ago
+- you have a record of all the actionable things you're proud of
+And
+- you won't have to spend time formatting reports
 
 ### Available Backend Implementations:
 - `sqlite`
